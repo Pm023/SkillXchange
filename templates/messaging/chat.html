@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aura Chat | {{ swap.requester.username }} & {{ swap.receiver.username }}{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts: Outfit for that premium look -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --aura-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        --aura-glass: rgba(15, 23, 42, 0.3);
+        --aura-glass-border: rgba(255, 255, 255, 0.08);
+        --aura-accent: #00d2ff;
+    }
+
+    .aura-wrapper {
+        font-family: 'Outfit', sans-serif;
+        max-width: 1000px;
+        margin: 2rem auto;
+        height: 75vh;
+        display: flex;
+        flex-direction: column;
+        border-radius: 32px;
+        background: var(--aura-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--aura-glass-border);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .aura-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--aura-glass-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .aura-header h2 {
+        font-size: 1.25rem;
+        margin: 0;
+        background: linear-gradient(to right, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 600;
+    }
+
+    .aura-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .aura-status .dot {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #10b981;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .aura-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--aura-glass-border) transparent;
+    }
+
+    .aura-messages::-webkit-scrollbar { width: 6px; }
+    .aura-messages::-webkit-scrollbar-thumb { background: var(--aura-glass-border); border-radius: 10px; }
+
+    .aura-msg {
+        max-width: 75%;
+        padding: 1rem 1.4rem;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        position: relative;
+        animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .aura-msg.sent {
+        align-self: flex-end;
+        background: var(--aura-primary);
+        color: white;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    }
+
+    .aura-msg.received {
+        align-self: flex-start;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--aura-glass-border);
+        color: #e2e8f0;
+        border-bottom-left-radius: 4px;
+    }
+
+    .aura-msg .time {
+        display: block;
+        font-size: 0.7rem;
+        margin-top: 0.4rem;
+        opacity: 0.6;
+    }
+
+    .aura-input-area {
+        padding: 1.5rem 2rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid var(--aura-glass-border);
+        display: flex;
+        gap: 1rem;
+    }
+
+    .aura-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid var(--aura-glass-border) !important;
+        border-radius: 16px !important;
+        padding: 0.8rem 1.2rem !important;
+        color: white !important;
+        transition: all 0.3s ease;
+    }
+
+    .aura-input:focus {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+    }
+
+    .aura-send-btn {
+        background: var(--aura-primary);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .aura-send-btn:hover {
+        transform: scale(1.05) rotate(-5deg);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .aura-send-btn:active { transform: scale(0.95); }
+
+    .system-msg {
+        align-self: center;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4 reveal">
+        <div class="col-12 text-center">
+            <span class="section-eyebrow">Secure Communication</span>
+            <p class="text-secondary">Discussing the swap between <strong>{{ swap.requester.username }}</strong> and <strong>{{ swap.receiver.username }}</strong></p>
+        </div>
+    </div>
+
+    <div class="aura-wrapper">
+        <div class="aura-header">
+            <h2>{% if swap.requester.username == user.username %}{{ swap.receiver.username }}{% else %}{{ swap.requester.username }}{% endif %}</h2>
+            <div id="socket-status" class="aura-status">
+                <span class="dot"></span> 
+                <span class="status-text">Connecting...</span>
+            </div>
+        </div>
+
+        <div id="aura-messages" class="aura-messages">
+            {% if not messages %}
+                <div class="system-msg">Start your premium conversation below.</div>
+            {% endif %}
+            {% for msg in messages %}
+                <div class="aura-msg {% if msg.sender_id == user.id %}sent{% else %}received{% endif %}">
+                    <div class="text">{{ msg.text }}</div>
+                    <span class="time">{{ msg.timestamp|date:"H:i" }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form id="aura-form" class="aura-input-area">
+            <input type="text" id="aura-input" placeholder="Type a message..." autocomplete="off" required class="aura-input">
+            <button type="submit" class="aura-send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Socket.IO Client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+<script>
+    const msgContainer = document.getElementById('aura-messages');
+    const chatForm = document.getElementById('aura-form');
+    const chatInput = document.getElementById('aura-input');
+    const statusText = document.querySelector('.status-text');
+    const statusDot = document.querySelector('.aura-status .dot');
+    
+    const userId = parseInt("{{ user.id }}");
+    const swapId = "{{ swap.id }}";
+    const receiverId = parseInt("{% if swap.requester.username == user.username %}{{ swap.receiver.id }}{% else %}{{ swap.requester.id }}{% endif %}");
+
+    // Initialize Socket.IO
+    const socket = io({
+        transports: ['websocket'],
+        upgrade: false
+    });
+
+    socket.on('connect', () => {
+        statusText.textContent = 'Aura Online';
+        statusText.parentElement.style.color = '#10b981';
+        statusDot.style.background = '#10b981';
+        statusDot.style.boxShadow = '0 0 10px #10b981';
+        
+        // Join the swap room
+        socket.emit('join_room', { swap_id: swapId });
+    });
+
+    socket.on('disconnect', () => {
+        statusText.textContent = 'Connecting...';
+        statusText.parentElement.style.color = '#f59e0b';
+        statusDot.style.background = '#f59e0b';
+        statusDot.style.boxShadow = '0 0 10px #f59e0b';
+    });
+
+    function appendMessage(text, senderId, timestamp = 'Just now') {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `aura-msg ${senderId === userId ? 'sent' : 'received'}`;
+        msgDiv.innerHTML = `
+            <div class="text">${text}</div>
+            <span class="time">${timestamp}</span>
+        `;
+        msgContainer.appendChild(msgDiv);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        
+        // Remove system msg if exists
+        const sysMsg = msgContainer.querySelector('.system-msg');
+        if (sysMsg) sysMsg.remove();
+    }
+
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // Emit message to server
+        socket.emit('send_message', {
+            swap_id: swapId,
+            text: text,
+            sender_id: userId,
+            receiver_id: receiverId
+        });
+
+        chatInput.value = '';
+    });
+
+    // Receive message from server
+    socket.on('receive_message', (data) => {
+        // Only append if it's the latest (handled by room anyway)
+        appendMessage(data.text, data.sender_id, data.timestamp);
+    });
+
+    // Auto-scroll to bottom on load
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+</script>
+{% endblock %}

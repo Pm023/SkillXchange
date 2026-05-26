@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.name }}'s Profile - SkillXchange{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container py-5">
+        <div class="row g-5">
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="glass-card text-center">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" class="rounded-circle mb-4 border border-4 border-primary" style="width: 180px; height: 180px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle mx-auto mb-4 bg-primary d-flex align-items-center justify-content-center text-white fw-bold display-1" style="width: 180px; height: 180px;">
+                            {{ profile.name|first }}
+                        </div>
+                    {% endif %}
+                    <h2 class="fw-bold">{{ profile.name }}</h2>
+                    <p class="text-info fw-bold">@{{ profile.user.username }}</p>
+                    
+                    <div class="d-flex justify-content-center gap-2 my-4">
+                        <span class="badge bg-dark border border-secondary p-2 px-3 rounded-pill">0 Swaps</span>
+                        <span class="badge bg-dark border border-secondary p-2 px-3 rounded-pill">5.0 Star</span>
+                    </div>
+
+                    <p class="text-secondary small px-3">"{{ profile.bio|default:"No bio added yet." }}"</p>
+                    
+                    {% if profile.user == user %}
+                        <a href="{% url 'edit_skills' %}" class="btn btn-primary w-100 mt-3">Manage My Skills</a>
+                        <a href="/admin/profiles/profile/{{ profile.id }}/change/" class="btn btn-outline-secondary btn-sm w-100 mt-2">Edit Other Info</a>
+                    {% else %}
+                        <a href="{% url 'send_request' profile.user.username %}" class="btn btn-primary w-100 mt-3 shadow-lg"><i class="bi bi-send me-2"></i>Send Swap Request</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-8">
+                <div class="glass-card mb-4">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-patch-check-fill text-primary me-2"></i>Skills Offered</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in profile.skills_offered.all %}
+                            <span class="badge bg-primary fs-6 py-2 px-3">{{ skill.name }}</span>
+                        {% empty %}
+                            <p class="text-secondary opacity-50">No skills offered listed yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="glass-card mb-4">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-search-heart text-info me-2"></i>Skills Wanted</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in profile.skills_wanted.all %}
+                            <span class="badge bg-info text-dark fs-6 py-2 px-3 fw-bold">{{ skill.name }}</span>
+                        {% empty %}
+                            <p class="text-secondary opacity-50">No skills wanted listed yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-star-fill text-warning me-2"></i>Reviews</h4>
+                    <p class="text-secondary py-4 text-center opacity-50 italic">No reviews yet. Complete your first swap to start building your reputation!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Server Dashboard - SkillXchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-dashboard-container {
+        padding: 5rem 0;
+    }
+    .admin-sidebar {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 2.5rem;
+        height: 100%;
+    }
+    .admin-main {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 4rem;
+        min-height: 70vh;
+    }
+    .admin-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: var(--text-main);
+        text-decoration: none;
+        margin-bottom: 0.8rem;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        font-weight: 500;
+    }
+    .admin-nav-item:hover {
+        background: rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.3);
+        color: var(--accent-color);
+        transform: translateX(5px);
+    }
+    .admin-nav-item i {
+        font-size: 1.4rem;
+        margin-right: 1.2rem;
+    }
+    .admin-nav-item.active {
+        background: var(--brand-gradient);
+        color: white;
+        box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+    }
+    .admin-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-glass);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+    .admin-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container admin-dashboard-container">
+    <div class="row g-5">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="admin-sidebar shadow-2xl animate-up">
+                <div class="mb-5 text-center">
+                    <div class="display-6 fw-bold text-primary mb-1">Server</div>
+                    <div class="text-secondary small text-uppercase fw-bold opacity-50">V: 2.4.0 (Production)</div>
+                </div>
+                
+                <nav>
+                    <a href="{% url 'admin_dashboard' %}" class="admin-nav-item active">
+                        <i class="bi bi-grid-fill"></i>Overview
+                    </a>
+                    <a href="{% url 'live_editor' %}" class="admin-nav-item">
+                        <i class="bi bi-pencil-square"></i>Live Control
+                    </a>
+                    <a href="{% url 'home' %}" target="_blank" class="admin-nav-item">
+                        <i class="bi bi-eye-fill"></i>Live Site
+                    </a>
+                    <a href="{% url 'admin:index' %}" target="_blank" class="admin-nav-item">
+                        <i class="bi bi-gear-fill"></i>Database Admin
+                    </a>
+                    <hr class="border-secondary opacity-25 my-4">
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="admin-nav-item text-danger border-0 w-100 bg-transparent">
+                            <i class="bi bi-box-arrow-left"></i>Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content (Overview) -->
+        <div class="col-lg-9">
+            <div class="admin-main shadow-2xl animate-up" style="animation-delay: 100ms;">
+                <div class="d-flex justify-content-between align-items-center mb-5 pb-4 border-bottom border-secondary border-opacity-25">
+                    <div>
+                        <h1 class="display-5 fw-bold mb-0">System Control</h1>
+                        <p class="text-secondary mt-1">Status: <span class="text-success fw-bold">Live \u0026 Synchronized</span></p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="admin-card">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-layout-text-window-reverse text-info me-2"></i>Live Control Panel</h5>
+                            <p class="text-secondary small mb-4">Manage homepage, features, and storytelling in a professional real-time preview environment.</p>
+                            <a href="{% url 'live_editor' %}" class="btn btn-outline-info w-100 py-3 fw-bold rounded-3">Open Live Control</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="admin-card">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-database-fill-check text-success me-2"></i>Database Node</h5>
+                            <p class="text-secondary small mb-4">Core relational and non-relational nodes (MongoDB) are operational.</p>
+                            <a href="{% url 'requests_dashboard' %}" class="btn btn-outline-success w-100 py-3 fw-bold rounded-3">Monitor Shards</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card mt-4">
+                    <h5 class="fw-bold mb-4">Quick Insights</h5>
+                    <div class="row text-center g-4">
+                        <div class="col-4">
+                            <div class="text-secondary small text-uppercase fw-bold mb-1">Server Latency</div>
+                            <div class="h3 fw-bold text-white">24ms</div>
+                        </div>
+                        <div class="col-4 border-start border-end border-secondary border-opacity-25">
+                            <div class="text-secondary small text-uppercase fw-bold mb-1">Active Swaps</div>
+                            <div class="h3 fw-bold text-white">1,240</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-secondary small text-uppercase fw-bold mb-1">Uptime</div>
+                            <div class="h3 fw-bold text-white">99.9%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

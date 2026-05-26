@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Control Center - SkillXchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* "Proper" Admin Sidebar & Layout */
+    body {
+        background: #020617;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    nav { display: none !important; } /* Hide public nav */
+
+    .admin-wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .admin-sidebar {
+        width: 280px;
+        background: #0f172a;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+    }
+
+    .admin-main {
+        flex-grow: 1;
+        margin-left: 280px;
+        padding: 3rem;
+        background: radial-gradient(at top right, rgba(99, 102, 241, 0.03), transparent 40%);
+    }
+
+    .sidebar-brand {
+        font-family: var(--header-font);
+        font-weight: 800;
+        font-size: 1.4rem;
+        background: var(--brand-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 3rem;
+        display: block;
+        letter-spacing: -1px;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.8rem 1rem;
+        color: #94a3b8;
+        text-decoration: none;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .sidebar-link:hover, .sidebar-link.active {
+        background: rgba(99, 102, 241, 0.1);
+        color: #fff;
+    }
+
+    .sidebar-link i {
+        font-size: 1.2rem;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Proper Stats Grid */
+    .stat-card-proper {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card-proper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+        border-radius: 0 0 0 100%;
+        z-index: 0;
+    }
+
+    .admin-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.4rem 1rem;
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">SKILLXCHANGE MGMT</div>
+        
+        <nav class="flex-grow-1">
+            <a href="/" class="sidebar-link">
+                <i class="bi bi-arrow-left-circle"></i> Back to Website
+            </a>
+            <div class="my-3 border-bottom border-secondary border-opacity-10 opacity-10"></div>
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-link active">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            <a href="{% url 'live_editor' %}" class="sidebar-link">
+                <i class="bi bi-pencil-square"></i> Live Site Editor
+            </a>
+            <a href="/admin/core/feature/" class="sidebar-link">
+                <i class="bi bi-stack"></i> Features
+            </a>
+            <a href="/admin/core/testimonial/" class="sidebar-link">
+                <i class="bi bi-chat-heart"></i> Testimonials
+            </a>
+            <a href="/admin/auth/user/" class="sidebar-link">
+                <i class="bi bi-people"></i> User Management
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="d-flex align-items-center gap-3 mb-4 p-2 bg-white bg-opacity-5 rounded-3">
+                <div class="bg-primary bg-opacity-20 rounded p-2 text-primary fw-bold" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;">AD</div>
+                <div>
+                    <div class="text-white small fw-bold">Administrator</div>
+                    <div class="text-secondary smaller" style="font-size: 0.7rem;">Superuser Portal</div>
+                </div>
+            </div>
+            <a href="{% url 'admin_logout' %}" class="btn btn-outline-danger w-100 py-2 rounded-pill fw-bold">
+                <i class="bi bi-power me-2"></i>Logout Securely
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+        <header class="d-flex justify-content-between align-items-center mb-5 reveal">
+            <div>
+                <h2 class="fw-bold mb-1">Overview Dashboard</h2>
+                <p class="text-secondary small">Real-time status of your skill-swap community.</p>
+            </div>
+            <div class="admin-status-badge">
+                <span class="pulse-green" style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;"></span>
+                System Healthy: v1.0.4
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4 reveal" style="transition-delay: 100ms;">
+                <div class="stat-card-proper">
+                    <div class="text-secondary small fw-bold text-uppercase mb-3">Live Page Status</div>
+                    <h2 class="fw-bold mb-1">Production</h2>
+                    <p class="text-success small mb-0"><i class="bi bi-check-circle me-1"></i> Changes Updated</p>
+                </div>
+            </div>
+            <div class="col-lg-4 reveal" style="transition-delay: 200ms;">
+                <div class="stat-card-proper">
+                    <div class="text-secondary small fw-bold text-uppercase mb-3">Total Modules</div>
+                    <h2 class="fw-bold mb-1">08</h2>
+                    <p class="text-secondary small mb-0"><i class="bi bi-database me-1"></i> Database Connected</p>
+                </div>
+            </div>
+            <div class="col-lg-4 reveal" style="transition-delay: 300ms;">
+                <div class="stat-card-proper" style="background: var(--brand-gradient); border: none;">
+                    <div class="text-white text-opacity-75 small fw-bold text-uppercase mb-3">Live Editor Activity</div>
+                    <h2 class="text-white fw-bold mb-1">Ready</h2>
+                    <p class="text-white text-opacity-75 small mb-0"><i class="bi bi-activity me-1"></i> Standby Mode</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Action Section -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8 reveal" style="transition-delay: 400ms;">
+                <div class="glass-card p-5 h-100" style="border-width: 2px; border-color: rgba(99, 102, 241, 0.1);">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <h3 class="fw-bold mb-3">Visual Site Management</h3>
+                            <p class="text-secondary mb-4">Launch our trademark live-preview editor to modify your landing page headlines, features, and social proof in real-time.</p>
+                            <a href="{% url 'live_editor' %}" class="btn btn-primary btn-lg px-5 py-3 shadow-2xl fw-bold">
+                                <i class="bi bi-window-sidebar me-2"></i>Open Real-Time Editor
+                            </a>
+                        </div>
+                        <div class="col-md-5 d-none d-md-block text-center">
+                            <i class="bi bi-laptop-fill opacity-25" style="font-size: 8rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 reveal" style="transition-delay: 500ms;">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="fw-bold mb-4">Quick Links</h5>
+                    <div class="list-group list-group-flush bg-transparent">
+                        <a href="/" class="list-group-item list-group-item-action bg-transparent text-secondary border-secondary border-opacity-10 py-3 d-flex justify-content-between">
+                            View Public Site <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                        <a href="/admin/" class="list-group-item list-group-item-action bg-transparent text-secondary border-secondary border-opacity-10 py-3 d-flex justify-content-between">
+                            Django Admin <i class="bi bi-sliders"></i>
+                        </a>
+                        <a href="{% url 'search' %}" class="list-group-item list-group-item-action bg-transparent text-secondary border-bottom-0 py-3 d-flex justify-content-between">
+                             Member Directory <i class="bi bi-people"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal mt-5 text-center" style="transition-delay: 600ms;">
+            <p class="text-secondary smaller opacity-25">SkillXchange Administrative Control Panel &copy; 2026. Authorised Access Only.</p>
+        </div>
+    </main>
+</div>
+
+<style>
+    .smaller { font-size: 0.75rem; }
+    .pulse-green {
+        animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+</style>
+{% endblock %}

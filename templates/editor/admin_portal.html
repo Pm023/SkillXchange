@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Portal - SkillXchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Admin Portal Override */
+    body {
+        background: #020617;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+    }
+    nav { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3">
+    <div class="glass-card reveal w-100 shadow-2xl" style="max-width: 450px; border-color: rgba(99, 102, 241, 0.2);">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center justify-content-center mb-4 rounded-circle bg-primary bg-opacity-10 p-3" style="width: 80px; height: 80px; border: 1px solid rgba(99, 102, 241, 0.3);">
+                <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+            </div>
+            <h2 class="display-6 fw-bold mb-2">Admin Portal</h2>
+            <p class="text-secondary small">Access the SkillXchange Management Suite.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger rounded-3 small mb-4 px-3 py-2">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label class="form-label mb-2 fw-bold text-secondary smallest text-uppercase">Identification</label>
+                <input type="text" name="username" class="form-control" placeholder="Admin username" required autofocus>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label mb-2 fw-bold text-secondary smallest text-uppercase">Authorization Key</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <div class="d-grid gap-3 mt-5">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow-2xl">
+                     <i class="bi bi-key-fill me-2"></i>Authenticate & Access
+                </button>
+                <a href="/" class="btn btn-outline-primary py-3 fw-bold opacity-50 hover-opacity-100">
+                    <i class="bi bi-globe me-2"></i>Public Interface
+                </a>
+            </div>
+        </form>
+
+        <div class="text-center mt-5 pt-4 border-top border-secondary border-opacity-10">
+            <p class="text-secondary smaller opacity-50">Authorised Personnel Only. Access attempts are logged.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .smaller { font-size: 0.75rem; }
+    .hover-opacity-100:hover { opacity: 1 !important; }
+</style>
+{% endblock %}

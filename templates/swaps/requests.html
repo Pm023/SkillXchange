@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Collaboration Center - SkillXchange{% endblock %}
+
+{% block content %}
+<section class="py-5" style="background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.05), transparent 40%); min-height: 85vh;">
+    <div class="container py-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+            <div>
+                <h1 class="display-5 fw-bold mb-0">Collaboration Center</h1>
+                <p class="text-secondary small mt-2">Manage your skill swaps and partnerships in one place.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-10 d-flex align-items-center px-3 py-2 rounded-pill">
+                    <i class="bi bi-people-fill me-2"></i>
+                    {{ sent_requests.count|add:received_requests.count }} Connections
+                </span>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show glass-card mb-4 border-0 p-3" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill text-success{% else %}bi-info-circle-fill text-info{% endif %} fs-4 me-3"></i>
+                        <div class="fw-bold">{{ message }}</div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-5">
+            <!-- Received Requests (Inbox) -->
+            <div class="col-lg-7">
+                <div class="glass-card mb-4 border-info border-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                        <h3 class="fw-bold mb-0"><i class="bi bi-mailbox2 text-info me-2"></i>Inbox</h3>
+                        <span class="badge bg-info text-dark rounded-pill">{{ received_requests.count }} Incoming</span>
+                    </div>
+                    
+                    {% if received_requests %}
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
+                                <thead>
+                                    <tr class="text-secondary opacity-50 small text-uppercase" style="letter-spacing: 2px; font-size: 0.7rem;">
+                                        <th>Sender</th>
+                                        <th>Goal</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in received_requests %}
+                                    <tr style="border-color: rgba(255,255,255,0.05);">
+                                        <td class="py-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-gradient text-white d-flex align-items-center justify-content-center fw-bold me-3 shadow-sm" style="width: 42px; height: 42px; background: var(--primary-gradient);">
+                                                    {{ req.requester.username|first|upper }}
+                                                </div>
+                                                <div>
+                                                    <a href="{% url 'view_public_profile' req.requester.username %}" class="fw-bold text-decoration-none text-white hover-info">@{{ req.requester.username }}</a>
+                                                    <small class="d-block text-secondary smaller opacity-75">{{ req.created_at|timesince }} ago</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-secondary smaller">Skill Swap Matching</span></td>
+                                        <td>
+                                            {% if req.status == 'P' %}
+                                                <span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 rounded-pill px-3 py-2">Action Needed</span>
+                                            {% elif req.status == 'A' %}
+                                                <span class="badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill px-3 py-2">Matched</span>
+                                            {% elif req.status == 'R' %}
+                                                <span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill px-3 py-2">Declined</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-2">Withdrawn</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            {% if req.status == 'P' %}
+                                                <div class="btn-group shadow-sm">
+                                                    <a href="{% url 'accept_request' req.id %}" class="btn btn-sm btn-info px-4 fw-bold">Accept</a>
+                                                    <a href="{% url 'reject_request' req.id %}" class="btn btn-sm btn-outline-danger px-3">Decline</a>
+                                                </div>
+                                            {% elif req.status == 'A' %}
+                                                <a href="{% url 'chat' req.id %}" class="btn btn-sm btn-primary px-4 fw-bold rounded-pill">
+                                                    <i class="bi bi-chat-text-fill me-2"></i>Message
+                                                </a>
+                                            {% else %}
+                                                <i class="bi bi-dash text-secondary opacity-50"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="py-5 text-center text-secondary">
+                            <i class="bi bi-inbox display-1 d-block mb-4 opacity-10"></i>
+                            <p class="fs-5">Your inbox is empty</p>
+                            <small class="opacity-50">When someone wants to swap skills with you, it will appear here.</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sent Requests (Outbox) -->
+            <div class="col-lg-5">
+                <div class="glass-card border-primary border-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                        <h3 class="fw-bold mb-0"><i class="bi bi-send-fill text-primary me-2"></i>Outbox</h3>
+                        <span class="badge bg-primary rounded-pill">{{ sent_requests.count }} Sent</span>
+                    </div>
+                    
+                    {% if sent_requests %}
+                        <div class="list-group list-group-flush">
+                            {% for req in sent_requests %}
+                            <div class="list-group-item bg-transparent border-secondary border-opacity-10 px-0 py-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle border border-secondary border-opacity-25 text-secondary d-flex align-items-center justify-content-center fw-bold me-3" style="width: 38px; height: 38px; background: rgba(255,255,255,0.03);">
+                                            {{ req.receiver.username|first|upper }}
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 fw-bold">Request to <span class="text-primary">@{{ req.receiver.username }}</span></p>
+                                            <small class="text-secondary opacity-75">{{ req.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="mb-2">
+                                            {% if req.status == 'P' %}
+                                                <span class="badge rounded-pill px-3 py-2 bg-primary-subtle text-primary border border-primary border-opacity-25">Requested</span>
+                                            {% elif req.status == 'A' %}
+                                                <span class="badge rounded-pill px-3 py-2 bg-success-subtle text-success border border-success border-opacity-25">Matched</span>
+                                            {% elif req.status == 'W' %}
+                                                <span class="badge rounded-pill px-3 py-2 bg-dark text-secondary border border-secondary border-opacity-25">Withdrawn</span>
+                                            {% else %}
+                                                <span class="badge rounded-pill px-3 py-2 bg-secondary text-white opacity-50">Declined</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if req.status == 'P' %}
+                                            <a href="{% url 'withdraw_request' req.id %}" class="btn btn-link link-danger btn-sm p-0 text-decoration-none smaller">Withdraw Request</a>
+                                        {% elif req.status == 'A' %}
+                                            <a href="{% url 'chat' req.id %}" class="btn btn-sm btn-outline-primary px-3 rounded-pill tiny mt-1">
+                                                <i class="bi bi-chat-dots me-1"></i>Chat
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="py-5 text-center text-secondary">
+                            <i class="bi bi-airplane-engines display-2 d-block mb-4 opacity-10" style="transform: rotate(45deg);"></i>
+                            <p>No active requests sent</p>
+                            <a href="{% url 'search' %}" class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4">Find New Partners</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hover-info:hover {
+        color: var(--accent-color) !important;
+    }
+    .smaller { font-size: 0.75rem; }
+    .table-dark { --bs-table-bg: transparent; }
+</style>
+{% endblock %}

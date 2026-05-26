@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - SkillXchange{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5 px-3" style="background: radial-gradient(circle at center, rgba(168, 85, 247, 0.08) 0%, transparent 70%);">
+    <div class="glass-card reveal w-100 shadow-2xl" style="max-width: 520px;">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center justify-content-center mb-3 rounded-circle bg-primary bg-opacity-10 p-3" style="width: 70px; height: 70px;">
+                <i class="bi bi-person-plus-fill text-primary fs-2"></i>
+            </div>
+            <h2 class="display-6 fw-bold mb-2">Join the Exchange</h2>
+            <p class="text-secondary">Create your account and start trading skills today.</p>
+        </div>
+
+        <form method="post" class="needs-validation">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger rounded-3 small mb-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row g-3">
+                {% for field in form %}
+                    <div class="{% if field.name == 'first_name' or field.name == 'last_name' %}col-md-6{% else %}col-12{% endif %} mb-3">
+                        <label class="form-label mb-2">{{ field.label }}</label>
+                        {{ field.errors }}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               class="form-control" 
+                               placeholder="Enter your {{ field.label|lower }}"
+                               required>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4 d-flex align-items-center gap-2">
+                <input type="checkbox" class="form-check-input bg-transparent border-secondary" id="terms" required>
+                <label class="text-secondary smaller" for="terms">I agree to the <a href="#" class="text-primary text-decoration-none">Terms of Service</a> & <a href="#" class="text-primary text-decoration-none">Privacy Policy</a></label>
+            </div>
+
+            <div class="d-grid gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow-lg">Create Free Account</button>
+                <div class="d-flex align-items-center gap-3 my-2">
+                    <hr class="flex-grow-1 opacity-10">
+                    <span class="text-secondary smaller opacity-50">ALREADY HAVE AN ACCOUNT?</span>
+                    <hr class="flex-grow-1 opacity-10">
+                </div>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary py-3 fw-bold">Sign In to Existing Account</a>
+            </div>
+        </form>
+
+        <div class="text-center mt-5 pt-4 border-top border-secondary border-opacity-10">
+            <p class="text-secondary small">By joining, you agree to our community guidelines for peer-to-peer learning.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .smaller { font-size: 0.75rem; }
+    .btn-outline-primary { border-color: rgba(255,255,255,0.1) !important; color: #fff !important; }
+    .btn-outline-primary:hover { background: var(--primary-gradient) !important; border-color: transparent !important; }
+</style>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ homepage.title|default:"Swap Skills, Grow Together" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        position: relative;
+        padding: 10rem 0 8rem;
+        background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 50%);
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 4.8rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+        background: linear-gradient(to right, #fff 30%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-muted);
+        max-width: 650px;
+        margin: 0 auto 3rem;
+        font-weight: 300;
+    }
+
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-color);
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .testimonial-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-right: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div style="position: absolute; top: -10%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: rgba(99, 102, 241, 0.1); filter: blur(150px); pointer-events: none; z-index: -1;"></div>
+    
+    <div class="container reveal">
+        <span class="section-eyebrow">World-Class Skill Sharing</span>
+        <h1 class="hero-title" id="preview-title">{{ homepage.title|default:"Unlock Your Potential" }}</h1>
+        <p class="hero-subtitle text-dim" id="preview-subtitle">{{ homepage.subtitle|default:"Join the world's most innovative skill-swapping network." }}</p>
+        <div class="d-flex justify-content-center gap-4">
+            <a href="{% url 'signup' %}" class="btn btn-primary shadow-primary" id="preview-cta-text">{{ homepage.cta_text|default:"Start Swapping" }}</a>
+            <a href="{% url 'search' %}" class="btn btn-outline-primary px-4">Explore Skills</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5" id="features">
+    <div class="container py-5">
+        <div class="text-center mb-5 reveal">
+            <span class="section-eyebrow">The Engine</span>
+            <h2 class="display-5 fw-bold">How Peer Learning Works</h2>
+        </div>
+        <div class="row g-5">
+            {% for feature in features %}
+            <div class="col-md-4 reveal">
+                <div class="glass-card h-100">
+                    <div class="feature-icon mb-4"><i class="bi {{ feature.icon_class }}"></i></div>
+                    <h4 class="mb-3 fw-bold" id="preview-feat-title-{{ feature.id }}">{{ feature.title }}</h4>
+                    <p class="text-secondary mb-0 small" id="preview-feat-desc-{{ feature.id }}">{{ feature.description }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-secondary py-5">
+                <p>Welcome to SkillXchange. Administrator will initialize the core engine soon.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5 reveal">
+            <span class="section-eyebrow">Community</span>
+            <h2 class="display-5 fw-bold">Success Stories</h2>
+        </div>
+        <div class="row g-4">
+            {% for t in testimonials %}
+            <div class="col-md-4 reveal">
+                <div class="glass-card h-100">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="testimonial-avatar">{{ t.name|first|upper }}</div>
+                        <div>
+                            <h5 class="mb-1 fw-bold">{{ t.name }}</h5>
+                            <div class="text-warning smaller"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-secondary font-italic text-sm">"{{ t.feedback }}"</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Footer CTA -->
+<section class="py-5 my-5 text-center reveal">
+    <div class="container">
+        <div class="glass-card py-5 shadow-2xl position-relative overflow-hidden" style="background: var(--brand-gradient);">
+            <h2 class="display-6 fw-bold mb-4 text-white">Start Your First Swap Today</h2>
+            <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-5 fw-bold text-primary">Join SkillXchange</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

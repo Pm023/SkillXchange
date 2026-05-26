@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Skills - SkillXchange{% endblock %}
+
+{% block content %}
+<section class="py-5" style="background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.05), transparent 40%);">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="glass-card reveal">
+                    <div class="text-center mb-5">
+                        <div class="d-inline-flex align-items-center justify-content-center mb-4 rounded-circle bg-primary bg-opacity-10 p-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-person-gear text-primary fs-2"></i>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-2">Manage Skills</h2>
+                        <p class="text-secondary small">Tell the community what you can teach and what you want to learn.</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label mb-2 fw-bold">Skills I Can Offer</label>
+                            <input type="text" name="offered" value="{{ offered }}" class="form-control" placeholder="e.g. Python, UI Design, Marketing (comma separated)">
+                            <small class="text-secondary opacity-50 mt-2 d-block smaller">Separate multiple skills with commas.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label mb-2 fw-bold">Skills I Want to Learn</label>
+                            <input type="text" name="wanted" value="{{ wanted }}" class="form-control" placeholder="e.g. React, SEO, French (comma separated)">
+                            <small class="text-secondary opacity-50 mt-2 d-block smaller">Separate multiple skills with commas.</small>
+                        </div>
+                        
+                        <div class="d-grid gap-3 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow-lg">Save Changes</button>
+                            <a href="{% url 'profile' %}" class="btn btn-outline-primary py-3 fw-bold">Return to Profile</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .smaller { font-size: 0.75rem; }
+    .glass-card {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 3rem;
+    }
+</style>
+{% endblock %}
