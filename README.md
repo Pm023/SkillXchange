@@ -92,6 +92,4 @@ During local development or when testing across multiple forwarded ports (e.g. s
 1. **Clear Cookie Cache**: Open your browser dev tools, clear all site cookies and local storage for `127.0.0.1` or `localhost`, and refresh.
 2. **Use Incognito Mode**: Open a private/incognito window to load `http://127.0.0.1:8002/`. This ensures a fresh, conflict-free session.
 
----
 
-*Made with 💜 for the Skill Sharing Community.*
